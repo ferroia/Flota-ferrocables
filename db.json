@@ -1,0 +1,23 @@
+{
+  "vehiculos": [
+    {
+      "id": 1,
+      "placa": "ABC-123",
+      "conductor": "Juan Pérez",
+      "kmActual": 50210,
+      "proxAceiteKm": 55000,
+      "vencSoat": "2026-11-20",
+      "vencTecno": "2026-12-10"
+    },
+    {
+      "id": 1792031511252,
+      "placa": "OLN64G",
+      "conductor": "Andrés lopez",
+      "kmActual": 64000,
+      "proxAceiteKm": 69000,
+      "vencSoat": "2027/02/10",
+      "vencTecno": "2027/02/10"
+    }
+  ],
+  "tanqueos": []
+}

@@ -1,0 +1,56 @@
+import express from 'express';
+import cors from 'cors';
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// Estado en memoria para pruebas
+let kilometrajeActual = 50210;
+let proxCambioAceite = 50000;
+
+// Endpoint de prueba
+app.get('/api/v1/ping', (req, res) => {
+  res.json({ status: 'ok', mensaje: '¡API de Gestión de Flota viva en tu tablet!' });
+});
+
+// Endpoint para registrar tanqueo
+app.post('/api/v1/tanqueos', (req, res) => {
+  const { kilometraje_registro, galones, costo_total_cop } = req.body;
+
+  if (parseInt(kilometraje_registro) <= kilometrajeActual) {
+    return res.status(400).json({
+      status: 'error',
+      message: `El kilometraje (${kilometraje_registro} Km) debe ser mayor al actual (${kilometrajeActual} Km).`
+    });
+  }
+
+  const distancia = parseInt(kilometraje_registro) - kilometrajeActual;
+  const kmPorGalon = (distancia / parseFloat(galones)).toFixed(2);
+  const costoPorKm = (parseFloat(costo_total_cop) / distancia).toFixed(2);
+
+  kilometrajeActual = parseInt(kilometraje_registro);
+
+  let alerta = null;
+  if (kilometrajeActual >= proxCambioAceite) {
+    alerta = `¡Alerta! Cambio de aceite vencido por ${kilometrajeActual - proxCambioAceite} Km.`;
+  }
+
+  res.status(201).json({
+    status: 'success',
+    message: 'Tanqueo registrado correctamente',
+    datos: {
+      distancia_recorrida_km: distancia,
+      rendimiento_km_galon: kmPorGalon,
+      costo_por_km_cop: `$${costoPorKm} COP`,
+      alerta: alerta
+    }
+  });
+});
+
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+});
+
+.
