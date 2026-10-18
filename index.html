@@ -15,203 +15,6 @@
     header { 
       background: #131c2e; 
       border-radius: 16px; 
-      padding: 14px 20px; 
-      border: 1px solid #1e293b; 
-      display: flex; 
-      flex-wrap: wrap; 
-      justify-content: space-between; 
-      align-items: center; 
-      gap: 16px; 
-    }
-
-    .brand-container {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: #ffffff;
-      padding: 8px 16px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    }
-
-    .brand-svg {
-      height: 38px;
-      width: auto;
-    }
-
-    /* Animación del Camión */
-    .truck-track {
-      position: relative;
-      flex: 1;
-      min-width: 180px;
-      height: 38px;
-      background: #0f172a;
-      border-radius: 20px;
-      border: 1px dashed #334155;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-    }
-
-    .truck-animated {
-      position: absolute;
-      font-size: 1.5rem;
-      animation: conducirCamion 7s linear infinite;
-    }
-
-    @keyframes conducirCamion {
-      0% { left: -40px; transform: scaleX(1); }
-      50% { left: calc(100% + 10px); transform: scaleX(1); }
-      51% { left: calc(100% + 10px); transform: scaleX(-1); }
-      99% { left: -40px; transform: scaleX(-1); }
-      100% { left: -40px; transform: scaleX(1); }
-    }
-
-    .btn-group { display: flex; gap: 8px; flex-wrap: wrap; z-index: 2; }
-    .btn { padding: 8px 14px; border-radius: 10px; font-size: 0.75rem; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s; }
-    .btn-primary { background: #2563eb; color: #ffffff; }
-    .btn-primary:hover { background: #1d4ed8; }
-    .btn-warning { background: #f59e0b; color: #000000; }
-    .btn-warning:hover { background: #d97706; }
-    .btn-secondary { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; }
-    .btn-secondary:hover { background: #334155; }
-
-    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
-    .kpi-card { background: #131c2e; padding: 18px; border-radius: 16px; border: 1px solid #1e293b; text-align: left; }
-    .kpi-title { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; }
-    .kpi-value { font-size: 1.6rem; font-weight: 900; color: #f8fafc; margin-top: 4px; }
-    .kpi-sub { font-size: 0.7rem; font-weight: 600; color: #38bdf8; margin-top: 2px; }
-
-    .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
-    .chart-card { background: #131c2e; border-radius: 16px; padding: 18px; border: 1px solid #1e293b; }
-    .chart-card h3 { font-size: 0.85rem; font-weight: 800; color: #94a3b8; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
-
-    .card { background: #131c2e; border-radius: 16px; padding: 18px; border: 1px solid #1e293b; }
-    .nav-tabs { display: flex; gap: 8px; border-bottom: 1px solid #1e293b; padding-bottom: 10px; margin-bottom: 12px; }
-    .tab-btn { background: none; border: none; color: #64748b; font-size: 0.8rem; font-weight: 700; padding: 6px 12px; cursor: pointer; border-radius: 8px; }
-    .tab-btn.active { background: #1e293b; color: #38bdf8; }
-
-    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-    th { background: #0f172a; color: #94a3b8; font-size: 0.7rem; font-weight: 800; text-align: left; padding: 10px; border-bottom: 1px solid #1e293b; text-transform: uppercase; }
-    td { font-size: 0.75rem; font-weight: 600; color: #cbd5e1; padding: 10px; border-bottom: 1px solid #1e293b; }
-
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50; }
-    .modal-body { background: #131c2e; border-radius: 20px; padding: 20px; max-width: 440px; width: 100%; border: 1px solid #334155; }
-    .form-group { margin-bottom: 10px; }
-    .form-group label { display: block; font-size: 0.7rem; font-weight: 700; color: #94a3b8; margin-bottom: 4px; uppercase; }
-    .form-control { width: 100%; background: #0b0f19; border: 1px solid #334155; border-radius: 10px; padding: 10px; font-size: 0.8rem; color: #f8fafc; outline: none; }
-  </style>
-  <script src="chart.min.js"></script>
-</head>
-<body>
-  <div class="max-w-7xl space-y-4">
-    <header>
-      <!-- Logo Oficial Ferrocables Vectorial Directo -->
-      <div class="brand-container">
-        <svg class="brand-svg" viewBox="0 0 260 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M22 2A20 20 0 0 0 2 22h20V2z" fill="#0083B0"/>
-          <path d="M2 28a20 20 0 0 0 20 20V28H2z" fill="#8EA604"/>
-          <path d="M28 2v46a20 20 0 0 0 20-20V2H28z" fill="#005C8A"/>
-          <text x="56" y="28" font-family="system-ui, sans-serif" font-weight="900" font-size="24" fill="#000000">ferrocables</text>
-          <text x="218" y="16" font-family="system-ui, sans-serif" font-weight="700" font-size="10" fill="#000000">®</text>
-          <text x="56" y="41" font-family="system-ui, sans-serif" font-weight="600" font-size="8" fill="#475569">centro de iluminación y material eléctrico</text>
-        </svg>
-      </div>
-
-      <!-- Pista y Camión Animado -->
-      <div class="truck-track">
-        <span class="truck-animated">🚛</span>
-      </div>
-
-      <!-- Botones de Acción -->
-      <div class="btn-group">
-        <button onclick="abrirModalVehiculo()" class="btn btn-secondary">🚛 + Vehículo</button>
-        <button onclick="abrirModalMaint()" class="btn btn-warning">🛠️ + Mantenimiento / Aceite</button>
-        <button onclick="abrirModalTanqueo()" class="btn btn-primary">⛽ + Tanqueo</button>
-      </div>
-    </header>
-
-    <main class="space-y-4">
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <p class="kpi-title">Gasto Total Acumulado</p>
-          <p id="kpi-gasto" class="kpi-value">$0</p>
-          <p id="kpi-gasto-sub" class="kpi-sub">Combustible + Mantenimientos</p>
-        </div>
-        <div class="kpi-card">
-          <p class="kpi-title">Recorrido Acumulado</p>
-          <p id="kpi-recorrido" class="kpi-value">0 Km</p>
-          <p class="kpi-sub">Calculado por Vehículo</p>
-        </div>
-        <div class="kpi-card">
-          <p class="kpi-title">Rendimiento Promedio</p>
-          <p id="kpi-rendimiento" class="kpi-value" style="color:#38bdf8">0 Km/Gal</p>
-          <p class="kpi-sub">Eficiencia de Flota</p>
-        </div>
-      </div>
-
-      <!-- Gráficas de Analíticas Mensuales -->
-      <div class="charts-grid">
-        <div class="chart-card">
-          <h3>📊 Control de Gastos Mes a Mes (COP)</h3>
-          <canvas id="chart-gastos" height="180"></canvas>
-        </div>
-        <div class="chart-card">
-          <h3>🚚 Recorrido por Mes (Km)</h3>
-          <canvas id="chart-recorrido" height="180"></canvas>
-        </div>
-        <div class="chart-card">
-          <h3>⚡ Consumo Promedio por Mes (Km/Gal)</h3>
-          <canvas id="chart-rendimiento" height="180"></canvas>
-        </div>
-      </div>
-
-      <!-- Pestañas de Tablas -->
-      <div class="card space-y-2">
-        <div class="nav-tabs">
-          <button id="btn-tab-tanqueos" onclick="cambiarTab('tanqueos')" class="tab-btn active">⛽ Tanqueos</button>
-          <button id="btn-tab-maint" onclick="cambiarTab('maint')" class="tab-btn">🛠️ Mantenimiento & Aceites</button>
-          <button id="btn-tab-docs" onclick="cambiarTab('docs')" class="tab-btn">📄 Vehículos, SOAT & Tecno</button>
-        </div>
-
-        <div id="sec-tanqueos" style="overflow-x:auto;">
-          <table>
-            <thead>
-              <tr>
-                <th>Placa</th>
-                <th>Fecha</th>
-                <th>Galones</th>
-                <th>Costo Total</th>
-                <th>Kilometraje</th>
-              </tr>
-            </thead>
-            <tbody id="tabla-tanqueos">
-              <tr><td colspan="5" style="text-align:center">
-
-git add . && git commit -m "Incorporar logo vectorial oficial y camion animado" && git push origin main
-
-
-cd ~/flota-ferrocables
-curl -s -o logo.png "https://www.ferrocables.com.co/wp-content/uploads/2021/04/logo-ferrocables.png"
-
-cat << 'EOF' > index.html
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FERROCABLES® - Gestión de Flota & Mantenimiento</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: #0b0f19; color: #f1f5f9; padding: 16px; min-height: 100vh; }
-    .max-w-7xl { max-width: 1280px; margin: 0 auto; }
-    .space-y-4 > * + * { margin-top: 1rem; }
-    .space-y-2 > * + * { margin-top: 0.5rem; }
-    .hidden { display: none !important; }
-
-    header { 
-      background: #131c2e; 
-      border-radius: 16px; 
       padding: 14px 24px; 
       border: 1px solid #1e293b; 
       display: flex; 
@@ -275,12 +78,10 @@ cat << 'EOF' > index.html
 <body>
   <div class="max-w-7xl space-y-4">
     <header>
-      <!-- Logo Oficial Limpio de Ferrocables -->
       <div class="brand-container">
         <img src="logo.png" alt="FERROCABLES® Logo" class="brand-logo" onerror="this.src='https://www.ferrocables.com.co/wp-content/uploads/2021/04/logo-ferrocables.png'">
       </div>
 
-      <!-- Botones de Acción Rápida -->
       <div class="btn-group">
         <button onclick="abrirModalVehiculo()" class="btn btn-secondary">🚛 + Vehículo</button>
         <button onclick="abrirModalMaint()" class="btn btn-warning">🛠️ + Mantenimiento / Aceite</button>
@@ -307,7 +108,6 @@ cat << 'EOF' > index.html
         </div>
       </div>
 
-      <!-- Gráficas de Control Mensual -->
       <div class="charts-grid">
         <div class="chart-card">
           <h3>📊 Control de Gastos Mes a Mes (COP)</h3>
@@ -323,7 +123,6 @@ cat << 'EOF' > index.html
         </div>
       </div>
 
-      <!-- Pestañas de Tablas -->
       <div class="card space-y-2">
         <div class="nav-tabs">
           <button id="btn-tab-tanqueos" onclick="cambiarTab('tanqueos')" class="tab-btn active">⛽ Tanqueos</button>
@@ -386,7 +185,6 @@ cat << 'EOF' > index.html
     </main>
   </div>
 
-  <!-- Modales -->
   <div id="modal-tanqueo" class="modal-overlay hidden">
     <div class="modal-body space-y-2">
       <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -462,34 +260,418 @@ cat << 'EOF' > index.html
 
   <div id="modal-vehiculo" class="modal-overlay hidden">
     <div class="modal-body space-y-2">
+      <div style="display:flex; justify-content:space-between; align
+
+git add . && git commit -m "Remover carro interactivo y publicar logo limpio" && git push origin main
+
+
+
+cd ~/flota-ferrocables
+cat << 'EOF' > index.html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>FERROCABLES® - Gestión de Flota</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #0b0f19; color: #f1f5f9; padding: 16px; min-height: 100vh; }
+    .max-w-7xl { max-width: 1280px; margin: 0 auto; }
+    .space-y-4 > * + * { margin-top: 1rem; }
+    .space-y-2 > * + * { margin-top: 0.5rem; }
+    .hidden { display: none !important; }
+
+    header { 
+      background: #131c2e; 
+      border-radius: 16px; 
+      padding: 14px 24px; 
+      border: 1px solid #1e293b; 
+      display: flex; 
+      flex-wrap: wrap; 
+      justify-content: space-between; 
+      align-items: center; 
+      gap: 16px; 
+    }
+
+    .brand-container {
+      display: flex;
+      align-items: center;
+      background: #ffffff;
+      padding: 8px 18px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .brand-logo-img {
+      height: 44px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn { padding: 10px 16px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: #2563eb; color: #ffffff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-warning { background: #f59e0b; color: #000000; }
+    .btn-warning:hover { background: #d97706; }
+    .btn-secondary { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; }
+    .btn-secondary:hover { background: #334155; }
+
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    .kpi-card { background: #131c2e; padding: 18px; border-radius: 16px; border: 1px solid #1e293b; text-align: left; }
+    .kpi-title { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; }
+    .kpi-value { font-size: 1.6rem; font-weight: 900; color: #f8fafc; margin-top: 4px; }
+    .kpi-sub { font-size: 0.7rem; font-weight: 600; color: #38bdf8; margin-top: 2px; }
+
+    .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
+    .chart-card { background: #131c2e; border-radius: 16px; padding: 18px; border: 1px solid #1e293b; }
+    .chart-card h3 { font-size: 0.85rem; font-weight: 800; color: #94a3b8; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .card { background: #131c2e; border-radius: 16px; padding: 18px; border: 1px solid #1e293b; }
+    .nav-tabs { display: flex; gap: 8px; border-bottom: 1px solid #1e293b; padding-bottom: 10px; margin-bottom: 12px; }
+    .tab-btn { background: none; border: none; color: #64748b; font-size: 0.8rem; font-weight: 700; padding: 6px 12px; cursor: pointer; border-radius: 8px; }
+    .tab-btn.active { background: #1e293b; color: #38bdf8; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th { background: #0f172a; color: #94a3b8; font-size: 0.7rem; font-weight: 800; text-align: left; padding: 10px; border-bottom: 1px solid #1e293b; text-transform: uppercase; }
+    td { font-size: 0.75rem; font-weight: 600; color: #cbd5e1; padding: 10px; border-bottom: 1px solid #1e293b; }
+
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 50; }
+    .modal-body { background: #131c2e; border-radius: 20px; padding: 20px; max-width: 440px; width: 100%; border: 1px solid #334155; }
+    .form-group { margin-bottom: 10px; }
+    .form-group label { display: block; font-size: 0.7rem; font-weight: 700; color: #94a3b8; margin-bottom: 4px; text-transform: uppercase; }
+    .form-control { width: 100%; background: #0b0f19; border: 1px solid #334155; border-radius: 10px; padding: 10px; font-size: 0.8rem; color: #f8fafc; outline: none; }
+  </style>
+  <script src="chart.min.js"></script>
+</head>
+<body>
+  <div class="max-w-7xl space-y-4">
+    <header>
+      <div class="brand-container">
+        <svg class="brand-logo-img" viewBox="0 0 280 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22 2A20 20 0 0 0 2 22h20V2z" fill="#0083B0"/>
+          <path d="M2 28a20 20 0 0 0 20 20V28H2z" fill="#8EA604"/>
+          <path d="M28 2v46a20 20 0 0 0 20-20V2H28z" fill="#005C8A"/>
+          <text x="56" y="28" font-family="system-ui, sans-serif" font-weight="900" font-size="24" fill="#000000">ferrocables</text>
+          <text x="218" y="16" font-family="system-ui, sans-serif" font-weight="700" font-size="10" fill="#000000">®</text>
+          <text x="56" y="41" font-family="system-ui, sans-serif" font-weight="600" font-size="8" fill="#475569">centro de iluminación y material eléctrico</text>
+        </svg>
+      </div>
+
+      <div class="btn-group">
+        <button onclick="abrirModalVehiculo()" class="btn btn-secondary">🚛 + Vehículo</button>
+        <button onclick="abrirModalMaint()" class="btn btn-warning">🛠️ + Mantenimiento / Aceite</button>
+        <button onclick="abrirModalTanqueo()" class="btn btn-primary">⛽ + Tanqueo</button>
+      </div>
+    </header>
+
+    <main class="space-y-4">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <p class="kpi-title">Gasto Total Acumulado</p>
+          <p id="kpi-gasto" class="kpi-value">$0</p>
+          <p id="kpi-gasto-sub" class="kpi-sub">Combustible + Mantenimientos</p>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-title">Recorrido Acumulado</p>
+          <p id="kpi-recorrido" class="kpi-value">0 Km</p>
+          <p class="kpi-sub">Calculado por Vehículo</p>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-title">Rendimiento Promedio</p>
+          <p id="kpi-rendimiento" class="kpi-value" style="color:#38bdf8">0 Km/Gal</p>
+          <p class="kpi-sub">Eficiencia de Flota</p>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h3>📊 Control de Gastos Mes a Mes (COP)</h3>
+          <canvas id="chart-gastos" height="180"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>🚚 Recorrido por Mes (Km)</h3>
+          <canvas id="chart-recorrido" height="180"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>⚡ Consumo Promedio por Mes (Km/Gal)</h3>
+          <canvas id="chart-rendimiento" height="180"></canvas>
+        </div>
+      </div>
+
+      <div class="card space-y-2">
+        <div class="nav-tabs">
+          <button id="btn-tab-tanqueos" onclick="cambiarTab('tanqueos')" class="tab-btn active">⛽ Tanqueos</button>
+          <button id="btn-tab-maint" onclick="cambiarTab('maint')" class="tab-btn">🛠️ Mantenimiento & Aceites</button>
+          <button id="btn-tab-docs" onclick="cambiarTab('docs')" class="tab-btn">📄 Vehículos, SOAT & Tecno</button>
+        </div>
+
+        <div id="sec-tanqueos" style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Placa</th>
+                <th>Fecha</th>
+                <th>Galones</th>
+                <th>Costo Total</th>
+                <th>Kilometraje</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-tanqueos">
+              <tr><td colspan="5" style="text-align:center">Cargando registros...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="sec-maint" class="hidden" style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Placa</th>
+                <th>Fecha</th>
+                <th>Tipo Serv.</th>
+                <th>Descripción / Aceite</th>
+                <th>Costo Total</th>
+                <th>Próx. Cambio (Km)</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-maint">
+              <tr><td colspan="6" style="text-align:center">No hay mantenimientos registrados.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="sec-docs" class="hidden" style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Placa</th>
+                <th>Modelo</th>
+                <th>Vencimiento SOAT</th>
+                <th>Vencimiento Tecno</th>
+                <th>Estado Documentos</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-vehiculos">
+              <tr><td colspan="5" style="text-align:center">No hay vehículos registrados.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="modal-tanqueo" class="modal-overlay hidden">
+    <div class="modal-body space-y-2">
       <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h3 style="font-weight:900;">Registrar Vehículo, SOAT & Tecno</h3>
+        <h3 style="font-weight:900;">Registrar Tanqueo</h3>
         <button onclick="cerrarModales()" style="background:none; border:none; color:#cbd5e1; font-size:1.2rem; cursor:pointer;">✕</button>
       </div>
-      <form id="form-vehiculo" class="space-y-2">
+      <form id="form-tanqueo" class="space-y-2">
         <div class="form-group">
           <label>Placa Vehículo</label>
-          <input type="text" id="inp-v-placa" required placeholder="Ej: JGT-456" class="form-control" style="text-transform:uppercase;">
+          <input type="text" id="inp-placa" required placeholder="Ej: JGT-456" class="form-control" style="text-transform:uppercase;">
         </div>
         <div class="form-group">
-          <label>Modelo / Marca</label>
-          <input type="text" id="inp-v-modelo" required placeholder="Ej: Chevrolet NPR 2022" class="form-control">
+          <label>Fecha</label>
+          <input type="date" id="inp-fecha-t" required class="form-control">
         </div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
           <div class="form-group">
-            <label>Vencimiento SOAT</label>
-            <input type="date" id="inp-v-soat" required class="form-control">
+            <label>Galones</label>
+            <input type="number" step="0.1" id="inp-galones" required class="form-control">
           </div>
           <div class="form-group">
-            <label>Vencimiento Tecno</label>
-            <input type="date" id="inp-v-tecno" required class="form-control">
+            <label>Costo (COP)</label>
+            <input type="number" id="inp-costo" required class="form-control">
           </div>
         </div>
-        <button type="submit" class="btn btn-secondary" style="width:100%; margin-top:8px; color:#ffffff; background:#2563eb;">Guardar Vehículo</button>
+        <div class="form-group">
+          <label>Kilometraje Actual</label>
+          <input type="number" id="inp-km" required class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; margin-top:8px;">Guardar Tanqueo</button>
       </form>
     </div>
   </div>
 
-  <script src="app.js?v=flota_clean_logo_v1"></script>
-</body>
-</html>
+  <div id="modal-maint" class="modal-overlay hidden">
+    <div class="modal-body space-y-2">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="font-weight:900;">Registrar Mantenimiento / Aceite</h3>
+        <button onclick="cerrarModales()" style="background:none; border:none; color:#cbd5e1; font-size:1.2rem; cursor:pointer;">✕</button>
+      </div>
+      <form id="form-maint" class="space-y-2">
+        <div class="form-group">
+          <label>Placa Vehículo</label>
+          <input type="text" id="inp-m-placa" required placeholder="Ej: JGT-456" class="form-control" style="text-transform:uppercase;">
+        </div>
+        <div class="form-group">
+          <label>Tipo de Servicio</label>
+          <select id="inp-m-tipo" class="form-control">
+            <option value="Cambio de Aceite">Cambio de Aceite</option>
+            <option value="Frenos / Llantas">Frenos / Llantas</option>
+            <option value="Mantenimiento General">Mantenimiento General</option>
+            <option value="Reparación Mecánica">Reparación Mecánica</option>
+          </select>
+        </div>
+        <div
+
+cat << 'EOF' > servidor.js
+const express = require('express');
+const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+const DATA_FILE = path.join(__dirname, 'datos_flota.json');
+
+app.use(cors());
+app.use(express.json());
+
+// Deshabilitar caché del navegador
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
+
+app.use(express.static(__dirname));
+
+const datosIniciales = {
+  vehiculos: [],
+  tanqueos: [],
+  mantenimientos: [],
+  documentos: []
+};
+
+function cargarDatos() {
+  try {
+    if (fs.existsSync(DATA_FILE)) {
+      const contenido = fs.readFileSync(DATA_FILE, 'utf-8');
+      const parseado = JSON.parse(contenido);
+      if (parseado) return { ...datosIniciales, ...parseado };
+    }
+  } catch (e) {
+    console.error('Error leyendo datos_flota.json:', e);
+  }
+  guardarDatos(datosIniciales);
+  return datosIniciales;
+}
+
+function guardarDatos(data) {
+  try {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (e) {
+    console.error('Error guardando datos_flota.json:', e);
+  }
+}
+
+let flotaState = cargarDatos();
+
+app.get('/api/v1/flota/dashboard', (req, res) => {
+  const gastoTanqueos = flotaState.tanqueos.reduce((acc, t) => acc + (Number(t.costoCOP) || 0), 0);
+  const gastoMantenimiento = flotaState.mantenimientos.reduce((acc, m) => acc + (Number(m.costoCOP) || 0), 0);
+  const gastoTotal = gastoTanqueos + gastoMantenimiento;
+
+  const totalGalones = flotaState.tanqueos.reduce((acc, t) => acc + (Number(t.galones) || 0), 0);
+
+  let recorridoTotal = 0;
+  const porPlaca = {};
+  flotaState.tanqueos.forEach(t => {
+    if (!porPlaca[t.placa]) porPlaca[t.placa] = [];
+    porPlaca[t.placa].push(Number(t.kilometraje) || 0);
+  });
+
+  Object.values(porPlaca).forEach(kms => {
+    if (kms.length > 1) {
+      recorridoTotal += (Math.max(...kms) - Math.min(...kms));
+    }
+  });
+
+  const rendimientoPromedio = totalGalones > 0 && recorridoTotal > 0 ? (recorridoTotal / totalGalones).toFixed(1) : 0;
+
+  const datosMeses = {};
+
+  flotaState.tanqueos.forEach(t => {
+    const mes = t.fecha ? t.fecha.substring(0, 7) : 'Sin Fecha';
+    if (!datosMeses[mes]) {
+      datosMeses[mes] = { gastoCombustible: 0, gastoMaint: 0, galones: 0, kmsPorPlaca: {} };
+    }
+    datosMeses[mes].gastoCombustible += Number(t.costoCOP) || 0;
+    datosMeses[mes].galones += Number(t.galones) || 0;
+    
+    if (!datosMeses[mes].kmsPorPlaca[t.placa]) datosMeses[mes].kmsPorPlaca[t.placa] = [];
+    datosMeses[mes].kmsPorPlaca[t.placa].push(Number(t.kilometraje) || 0);
+  });
+
+  flotaState.mantenimientos.forEach(m => {
+    const mes = m.fecha ? m.fecha.substring(0, 7) : 'Sin Fecha';
+    if (!datosMeses[mes]) {
+      datosMeses[mes] = { gastoCombustible: 0, gastoMaint: 0, galones: 0, kmsPorPlaca: {} };
+    }
+    datosMeses[mes].gastoMaint += Number(m.costoCOP) || 0;
+  });
+
+  const mesesOrdenados = Object.keys(datosMeses).sort();
+  const reportesMensuales = mesesOrdenados.map(mes => {
+    const info = datosMeses[mes];
+    let kmMes = 0;
+    Object.values(info.kmsPorPlaca).forEach(kms => {
+      if (kms.length > 1) {
+        kmMes += (Math.max(...kms) - Math.min(...kms));
+      }
+    });
+    const rendMes = info.galones > 0 && kmMes > 0 ? (kmMes / info.galones).toFixed(1) : 0;
+    return {
+      mes,
+      gastoCombustible: info.gastoCombustible,
+      gastoMaint: info.gastoMaint,
+      gastoTotal: info.gastoCombustible + info.gastoMaint,
+      kmRecorridos: kmMes,
+      rendimientoKmGal: Number(rendMes)
+    };
+  });
+
+  res.json({
+    gastoTotalCOP: gastoTotal,
+    gastoTanqueosCOP: gastoTanqueos,
+    gastoMantenimientoCOP: gastoMantenimiento,
+    recorridoAcumuladoKm: recorridoTotal,
+    rendimientoPromedio: rendimientoPromedio,
+    reportesMensuales: reportesMensuales,
+    vehiculos: flotaState.vehiculos,
+    tanqueos: flotaState.tanqueos,
+    mantenimientos: flotaState.mantenimientos,
+    documentos: flotaState.documentos
+  });
+});
+
+app.post('/api/v1/flota/tanqueos', (req, res) => {
+  const nuevo = { id: 't_' + Date.now(), ...req.body };
+  flotaState.tanqueos.push(nuevo);
+  guardarDatos(flotaState);
+  res.status(201).json(nuevo);
+});
+
+app.post('/api/v1/flota/mantenimientos', (req, res) => {
+  const nuevo = { id: 'm_' + Date.now(), ...req.body };
+  flotaState.mantenimientos.push(nuevo);
+  guardarDatos(flotaState);
+  res.status(201).json(nuevo);
+});
+
+app.post('/api/v1/flota/vehiculos', (req, res) => {
+  const nuevo = { id: 'v_' + Date.now(), ...req.body };
+  flotaState.vehiculos.push(nuevo);
+  guardarDatos(flotaState);
+  res.status(201).json(nuevo);
+});
+
+app.listen(PORT, () => console.log('Servidor Flota v4.0 en puerto ' + PORT));
