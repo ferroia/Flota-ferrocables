@@ -12,16 +12,8 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 const datosIniciales = {
-  vehiculos: [
-    { id: 'v1', placa: 'JGT-456', modelo: 'NPR Chevrolet', tipo: 'Camión', estado: 'Activo' },
-    { id: 'v2', placa: 'TSU-123', modelo: 'NHR Chevrolet', tipo: 'Camión', estado: 'Activo' },
-    { id: 'v3', placa: 'EKO-890', modelo: 'Carry Suzuki', tipo: 'Van', estado: 'Activo' }
-  ],
-  tanqueos: [
-    { id: 't1', vehiculoId: 'v1', placa: 'JGT-456', fecha: '2026-10-10', galones: 18.5, costoCOP: 285000, kilometraje: 142500 },
-    { id: 't2', vehiculoId: 'v2', placa: 'TSU-123', fecha: '2026-10-12', galones: 12.0, costoCOP: 180000, kilometraje: 98200 },
-    { id: 't3', vehiculoId: 'v1', placa: 'JGT-456', fecha: '2026-10-15', galones: 20.0, costoCOP: 310000, kilometraje: 143100 }
-  ]
+  vehiculos: [],
+  tanqueos: []
 };
 
 function cargarDatos() {
@@ -52,15 +44,27 @@ app.get('/api/v1/flota/dashboard', (req, res) => {
   const gastoTotal = flotaState.tanqueos.reduce((acc, t) => acc + (Number(t.costoCOP) || 0), 0);
   const totalGalones = flotaState.tanqueos.reduce((acc, t) => acc + (Number(t.galones) || 0), 0);
   
-  const kms = flotaState.tanqueos.map(t => Number(t.kilometraje) || 0).filter(k => k > 0);
-  const minKm = kms.length > 0 ? Math.min(...kms) : 0;
-  const maxKm = kms.length > 0 ? Math.max(...kms) : 0;
-  const recorridoAcumulado = maxKm > minKm ? (maxKm - minKm) : 1250;
-  const rendimientoPromedio = totalGalones > 0 ? (recorridoAcumulado / totalGalones).toFixed(1) : 0;
+  // Calcular recorrido filtrado por la misma placa
+  let recorridoTotal = 0;
+  const porPlaca = {};
+  flotaState.tanqueos.forEach(t => {
+    if (!porPlaca[t.placa]) porPlaca[t.placa] = [];
+    porPlaca[t.placa].push(Number(t.kilometraje) || 0);
+  });
+
+  Object.values(porPlaca).forEach(kms => {
+    if (kms.length > 1) {
+      const min = Math.min(...kms);
+      const max = Math.max(...kms);
+      recorridoTotal += (max - min);
+    }
+  });
+
+  const rendimientoPromedio = totalGalones > 0 && recorridoTotal > 0 ? (recorridoTotal / totalGalones).toFixed(1) : 0;
 
   res.json({
     gastoTotalCOP: gastoTotal,
-    recorridoAcumuladoKm: recorridoAcumulado,
+    recorridoAcumuladoKm: recorridoTotal,
     rendimientoPromedio: rendimientoPromedio,
     vehiculosCount: flotaState.vehiculos.length,
     tanqueosCount: flotaState.tanqueos.length,
