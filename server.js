@@ -11,10 +11,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// Boceto inicial completamente en cero
 const datosIniciales = {
   vehiculos: [],
-  tanqueos: []
+  tanqueos: [],
+  mantenimientos: [],
+  documentos: []
 };
 
 function cargarDatos() {
@@ -22,7 +23,7 @@ function cargarDatos() {
     if (fs.existsSync(DATA_FILE)) {
       const contenido = fs.readFileSync(DATA_FILE, 'utf-8');
       const parseado = JSON.parse(contenido);
-      if (parseado && parseado.tanqueos) return parseado;
+      if (parseado) return { ...datosIniciales, ...parseado };
     }
   } catch (e) {
     console.error('Error leyendo datos_flota.json:', e);
@@ -42,10 +43,12 @@ function guardarDatos(data) {
 let flotaState = cargarDatos();
 
 app.get('/api/v1/flota/dashboard', (req, res) => {
-  const gastoTotal = flotaState.tanqueos.reduce((acc, t) => acc + (Number(t.costoCOP) || 0), 0);
+  const gastoTanqueos = flotaState.tanqueos.reduce((acc, t) => acc + (Number(t.costoCOP) || 0), 0);
+  const gastoMantenimiento = flotaState.mantenimientos.reduce((acc, m) => acc + (Number(m.costoCOP) || 0), 0);
+  const gastoTotal = gastoTanqueos + gastoMantenimiento;
+
   const totalGalones = flotaState.tanqueos.reduce((acc, t) => acc + (Number(t.galones) || 0), 0);
-  
-  // Cálculo de recorrido relativo por placa única
+
   let recorridoTotal = 0;
   const porPlaca = {};
   flotaState.tanqueos.forEach(t => {
@@ -55,9 +58,7 @@ app.get('/api/v1/flota/dashboard', (req, res) => {
 
   Object.values(porPlaca).forEach(kms => {
     if (kms.length > 1) {
-      const min = Math.min(...kms);
-      const max = Math.max(...kms);
-      recorridoTotal += (max - min);
+      recorridoTotal += (Math.max(...kms) - Math.min(...kms));
     }
   });
 
@@ -65,18 +66,27 @@ app.get('/api/v1/flota/dashboard', (req, res) => {
 
   res.json({
     gastoTotalCOP: gastoTotal,
+    gastoTanqueosCOP: gastoTanqueos,
+    gastoMantenimientoCOP: gastoMantenimiento,
     recorridoAcumuladoKm: recorridoTotal,
     rendimientoPromedio: rendimientoPromedio,
-    vehiculosCount: flotaState.vehiculos.length,
-    tanqueosCount: flotaState.tanqueos.length,
     vehiculos: flotaState.vehiculos,
-    tanqueos: flotaState.tanqueos
+    tanqueos: flotaState.tanqueos,
+    mantenimientos: flotaState.mantenimientos,
+    documentos: flotaState.documentos
   });
 });
 
 app.post('/api/v1/flota/tanqueos', (req, res) => {
   const nuevo = { id: 't_' + Date.now(), ...req.body };
   flotaState.tanqueos.push(nuevo);
+  guardarDatos(flotaState);
+  res.status(201).json(nuevo);
+});
+
+app.post('/api/v1/flota/mantenimientos', (req, res) => {
+  const nuevo = { id: 'm_' + Date.now(), ...req.body };
+  flotaState.mantenimientos.push(nuevo);
   guardarDatos(flotaState);
   res.status(201).json(nuevo);
 });
@@ -88,4 +98,4 @@ app.post('/api/v1/flota/vehiculos', (req, res) => {
   res.status(201).json(nuevo);
 });
 
-app.listen(PORT, () => console.log('Servidor Flota en puerto ' + PORT));
+app.listen(PORT, () => console.log('Servidor Flota Completo en puerto ' + PORT));
