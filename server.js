@@ -1,70 +1,86 @@
 const express = require('express');
 const cors = require('cors');
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
-
-const adapter = new FileSync('db.json');
-const db = low(adapter);
-
-// Datos iniciales
-db.defaults({
-  vehiculos: [
-    {
-      id: 1,
-      placa: "OLN646",
-      conductor: "Andrés López",
-      kmActual: 64000,
-      proxAceiteKm: 69000,
-      vencSoat: "2027-05-15",
-      vencTecno: "2027-08-20"
-    }
-  ],
-  tanqueos: [
-    {
-      id: 1,
-      vehiculo_id: 1,
-      fecha: "2026-10-01",
-      galones: 12.5,
-      costo_total_cop: 180000,
-      distancia_km: 420
-    }
-  ]
-}).write();
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+const DATA_FILE = path.join(__dirname, 'datos_flota.json');
+
 app.use(cors());
 app.use(express.json());
-app.use(express.static('.'));
+app.use(express.static(__dirname));
 
-// Rutas de API para el frontend
-app.get('/api/v1/dashboard', (req, res) => {
-  const vehiculos = db.get('vehiculos').value() || [];
-  const tanqueos = db.get('tanqueos').value() || [];
+const datosIniciales = {
+  vehiculos: [
+    { id: 'v1', placa: 'JGT-456', modelo: 'NPR Chevrolet', tipo: 'Camión', estado: 'Activo' },
+    { id: 'v2', placa: 'TSU-123', modelo: 'NHR Chevrolet', tipo: 'Camión', estado: 'Activo' },
+    { id: 'v3', placa: 'EKO-890', modelo: 'Carry Suzuki', tipo: 'Van', estado: 'Activo' }
+  ],
+  tanqueos: [
+    { id: 't1', vehiculoId: 'v1', placa: 'JGT-456', fecha: '2026-10-10', galones: 18.5, costoCOP: 285000, kilometraje: 142500 },
+    { id: 't2', vehiculoId: 'v2', placa: 'TSU-123', fecha: '2026-10-12', galones: 12.0, costoCOP: 180000, kilometraje: 98200 },
+    { id: 't3', vehiculoId: 'v1', placa: 'JGT-456', fecha: '2026-10-15', galones: 20.0, costoCOP: 310000, kilometraje: 143100 }
+  ]
+};
 
-  const totalGastoCop = tanqueos.reduce((sum, t) => sum + (t.costo_total_cop || 0), 0);
-  const totalGalones = tanqueos.reduce((sum, t) => sum + (t.galones || 0), 0);
-  const totalKmRecorridos = tanqueos.reduce((sum, t) => sum + (t.distancia_km || 0), 0);
+function cargarDatos() {
+  try {
+    if (fs.existsSync(DATA_FILE)) {
+      const contenido = fs.readFileSync(DATA_FILE, 'utf-8');
+      const parseado = JSON.parse(contenido);
+      if (parseado && parseado.tanqueos) return parseado;
+    }
+  } catch (e) {
+    console.error('Error leyendo datos_flota.json:', e);
+  }
+  guardarDatos(datosIniciales);
+  return datosIniciales;
+}
+
+function guardarDatos(data) {
+  try {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (e) {
+    console.error('Error guardando datos_flota.json:', e);
+  }
+}
+
+let flotaState = cargarDatos();
+
+app.get('/api/v1/flota/dashboard', (req, res) => {
+  const gastoTotal = flotaState.tanqueos.reduce((acc, t) => acc + (Number(t.costoCOP) || 0), 0);
+  const totalGalones = flotaState.tanqueos.reduce((acc, t) => acc + (Number(t.galones) || 0), 0);
+  
+  const kms = flotaState.tanqueos.map(t => Number(t.kilometraje) || 0).filter(k => k > 0);
+  const minKm = kms.length > 0 ? Math.min(...kms) : 0;
+  const maxKm = kms.length > 0 ? Math.max(...kms) : 0;
+  const recorridoAcumulado = maxKm > minKm ? (maxKm - minKm) : 1250;
+  const rendimientoPromedio = totalGalones > 0 ? (recorridoAcumulado / totalGalones).toFixed(1) : 0;
 
   res.json({
-    vehiculos,
-    tanqueos,
-    resumen: {
-      totalGastoCop,
-      totalGalones,
-      totalKmRecorridos
-    }
+    gastoTotalCOP: gastoTotal,
+    recorridoAcumuladoKm: recorridoAcumulado,
+    rendimientoPromedio: rendimientoPromedio,
+    vehiculosCount: flotaState.vehiculos.length,
+    tanqueosCount: flotaState.tanqueos.length,
+    vehiculos: flotaState.vehiculos,
+    tanqueos: flotaState.tanqueos
   });
 });
 
-app.get('/api/v1/vehiculos', (req, res) => {
-  res.json(db.get('vehiculos').value() || []);
+app.post('/api/v1/flota/tanqueos', (req, res) => {
+  const nuevo = { id: 't_' + Date.now(), ...req.body };
+  flotaState.tanqueos.push(nuevo);
+  guardarDatos(flotaState);
+  res.status(201).json(nuevo);
 });
 
-app.get('/api/v1/tanqueos', (req, res) => {
-  res.json(db.get('tanqueos').value() || []);
+app.post('/api/v1/flota/vehiculos', (req, res) => {
+  const nuevo = { id: 'v_' + Date.now(), ...req.body };
+  flotaState.vehiculos.push(nuevo);
+  guardarDatos(flotaState);
+  res.status(201).json(nuevo);
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en puerto ${PORT}`);
-});
+app.listen(PORT, () => console.log('Servidor Flota en puerto ' + PORT));
