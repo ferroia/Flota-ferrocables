@@ -1,3 +1,7 @@
+let chartGastosInstance = null;
+let chartRecorridoInstance = null;
+let chartRendimientoInstance = null;
+
 async function cargarFlota() {
   try {
     const res = await fetch('/api/v1/flota/dashboard');
@@ -11,9 +15,92 @@ async function cargarFlota() {
     renderTablaTanqueos(data.tanqueos || []);
     renderTablaMantenimientos(data.mantenimientos || []);
     renderTablaVehiculos(data.vehiculos || []);
+    renderGraficas(data.reportesMensuales || []);
   } catch (err) {
     console.error('Error cargando datos de la flota:', err);
   }
+}
+
+function renderGraficas(reportes) {
+  const labels = reportes.length > 0 ? reportes.map(r => r.mes) : ['Sin Datos'];
+  const gastosComb = reportes.length > 0 ? reportes.map(r => r.gastoCombustible) : [0];
+  const gastosMaint = reportes.length > 0 ? reportes.map(r => r.gastoMaint) : [0];
+  const kms = reportes.length > 0 ? reportes.map(r => r.kmRecorridos) : [0];
+  const rendimiento = reportes.length > 0 ? reportes.map(r => r.rendimientoKmGal) : [0];
+
+  // 1. Gráfica de Gastos Mes a Mes
+  const ctxGastos = document.getElementById('chart-gastos').getContext('2d');
+  if (chartGastosInstance) chartGastosInstance.destroy();
+  chartGastosInstance = new Chart(ctxGastos, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        { label: 'Combustible', data: gastosComb, backgroundColor: '#2563eb' },
+        { label: 'Mantenimiento', data: gastosMaint, backgroundColor: '#f59e0b' }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { color: '#cbd5e1' } } },
+      scales: {
+        x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } },
+        y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
+      }
+    }
+  });
+
+  // 2. Gráfica de Recorrido por Mes
+  const ctxRecorrido = document.getElementById('chart-recorrido').getContext('2d');
+  if (chartRecorridoInstance) chartRecorridoInstance.destroy();
+  chartRecorridoInstance = new Chart(ctxRecorrido, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Kilómetros (Km)',
+        data: kms,
+        borderColor: '#10b981',
+        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { color: '#cbd5e1' } } },
+      scales: {
+        x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } },
+        y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
+      }
+    }
+  });
+
+  // 3. Gráfica de Consumo Promedio (Km/Gal)
+  const ctxRendimiento = document.getElementById('chart-rendimiento').getContext('2d');
+  if (chartRendimientoInstance) chartRendimientoInstance.destroy();
+  chartRendimientoInstance = new Chart(ctxRendimiento, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Eficiencia (Km/Gal)',
+        data: rendimiento,
+        borderColor: '#38bdf8',
+        backgroundColor: 'rgba(56, 189, 248, 0.1)',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { color: '#cbd5e1' } } },
+      scales: {
+        x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } },
+        y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
+      }
+    }
+  });
 }
 
 function renderTablaTanqueos(lista) {

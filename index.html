@@ -33,6 +33,10 @@
     .kpi-value { font-size: 1.6rem; font-weight: 900; color: #f8fafc; margin-top: 4px; }
     .kpi-sub { font-size: 0.7rem; font-weight: 600; color: #38bdf8; margin-top: 2px; }
 
+    .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
+    .chart-card { background: #131c2e; border-radius: 16px; padding: 18px; border: 1px solid #1e293b; }
+    .chart-card h3 { font-size: 0.85rem; font-weight: 800; color: #94a3b8; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+
     .card { background: #131c2e; border-radius: 16px; padding: 18px; border: 1px solid #1e293b; }
     .nav-tabs { display: flex; gap: 8px; border-bottom: 1px solid #1e293b; padding-bottom: 10px; margin-bottom: 12px; }
     .tab-btn { background: none; border: none; color: #64748b; font-size: 0.8rem; font-weight: 700; padding: 6px 12px; cursor: pointer; border-radius: 8px; }
@@ -48,6 +52,7 @@
     .form-group label { display: block; font-size: 0.7rem; font-weight: 700; color: #94a3b8; margin-bottom: 4px; uppercase; }
     .form-control { width: 100%; background: #0b0f19; border: 1px solid #334155; border-radius: 10px; padding: 10px; font-size: 0.8rem; color: #f8fafc; outline: none; }
   </style>
+  <script src="chart.min.js"></script>
 </head>
 <body>
   <div class="max-w-7xl space-y-4">
@@ -82,6 +87,22 @@
           <p class="kpi-title">Rendimiento Promedio</p>
           <p id="kpi-rendimiento" class="kpi-value" style="color:#38bdf8">0 Km/Gal</p>
           <p class="kpi-sub">Eficiencia de Flota</p>
+        </div>
+      </div>
+
+      <!-- Sección de Gráficas de Control Mensual -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h3>📊 Control de Gastos Mes a Mes (COP)</h3>
+          <canvas id="chart-gastos" height="180"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>🚚 Recorrido por Mes (Km)</h3>
+          <canvas id="chart-recorrido" height="180"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>⚡ Consumo Promedio por Mes (Km/Gal)</h3>
+          <canvas id="chart-rendimiento" height="180"></canvas>
         </div>
       </div>
 
@@ -147,7 +168,7 @@
     </main>
   </div>
 
-  <!-- Modal Tanqueo -->
+  <!-- Modales -->
   <div id="modal-tanqueo" class="modal-overlay hidden">
     <div class="modal-body space-y-2">
       <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -182,7 +203,6 @@
     </div>
   </div>
 
-  <!-- Modal Mantenimiento / Aceite -->
   <div id="modal-maint" class="modal-overlay hidden">
     <div class="modal-body space-y-2">
       <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -222,7 +242,6 @@
     </div>
   </div>
 
-  <!-- Modal Vehículo / SOAT / Tecno -->
   <div id="modal-vehiculo" class="modal-overlay hidden">
     <div class="modal-body space-y-2">
       <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -253,6 +272,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=flota_dark_v3"></script>
+  <script src="app.js?v=flota_charts_v1"></script>
 </body>
 </html>
