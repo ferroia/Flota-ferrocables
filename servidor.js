@@ -9,13 +9,18 @@ const DATA_FILE = path.join(__dirname, 'datos_flota.json');
 
 app.use(cors());
 app.use(express.json());
+
+// Anular todo tipo de caché en el navegador
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
+
 app.use(express.static(__dirname));
 
-const datosIniciales = {
-  vehiculos: [],
-  tanqueos: [],
-  mantenimientos: []
-};
+const datosIniciales = { vehiculos: [], tanqueos: [], mantenimientos: [], documentos: [] };
 
 function cargarDatos() {
   try {
@@ -45,10 +50,8 @@ app.get('/api/v1/flota/dashboard', (req, res) => {
   const gastoTanqueos = flotaState.tanqueos.reduce((acc, t) => acc + (Number(t.costoCOP) || 0), 0);
   const gastoMantenimiento = flotaState.mantenimientos.reduce((acc, m) => acc + (Number(m.costoCOP) || 0), 0);
   const gastoTotal = gastoTanqueos + gastoMantenimiento;
-
   const totalGalones = flotaState.tanqueos.reduce((acc, t) => acc + (Number(t.galones) || 0), 0);
 
-  // Recorrido global
   let recorridoTotal = 0;
   const porPlaca = {};
   flotaState.tanqueos.forEach(t => {
@@ -57,64 +60,49 @@ app.get('/api/v1/flota/dashboard', (req, res) => {
   });
 
   Object.values(porPlaca).forEach(kms => {
-    if (kms.length > 1) {
-      recorridoTotal += (Math.max(...kms) - Math.min(...kms));
-    }
+    if (kms.length > 1) recorridoTotal += (Math.max(...kms) - Math.min(...kms));
   });
 
   const rendimientoPromedio = totalGalones > 0 && recorridoTotal > 0 ? (recorridoTotal / totalGalones).toFixed(1) : 0;
 
-  // Procesamiento de datos mensuales para las gráficas
-  const mesesMap = {};
-
+  const datosMeses = {};
   flotaState.tanqueos.forEach(t => {
-    if (!t.fecha) return;
-    const mesKey = t.fecha.substring(0, 7); // AAAA-MM
-    if (!mesesMap[mesKey]) {
-      mesesMap[mesKey] = { mes: mesKey, gastoCombustible: 0, gastoMaint: 0, galones: 0, kmsByPlaca: {} };
-    }
-    mesesMap[mesKey].gastoCombustible += Number(t.costoCOP) || 0;
-    mesesMap[mesKey].galones += Number(t.galones) || 0;
-
-    if (!mesesMap[mesKey].kmsByPlaca[t.placa]) mesesMap[mesKey].kmsByPlaca[t.placa] = [];
-    mesesMap[mesKey].kmsByPlaca[t.placa].push(Number(t.kilometraje) || 0);
+    const mes = t.fecha ? t.fecha.substring(0, 7) : 'Sin Fecha';
+    if (!datosMeses[mes]) datosMeses[mes] = { gastoCombustible: 0, gastoMaint: 0, galones: 0, kmsPorPlaca: {} };
+    datosMeses[mes].gastoCombustible += Number(t.costoCOP) || 0;
+    datosMeses[mes].galones += Number(t.galones) || 0;
+    if (!datosMeses[mes].kmsPorPlaca[t.placa]) datosMeses[mes].kmsPorPlaca[t.placa] = [];
+    datosMeses[mes].kmsPorPlaca[t.placa].push(Number(t.kilometraje) || 0);
   });
 
   flotaState.mantenimientos.forEach(m => {
-    if (!m.fecha) return;
-    const mesKey = m.fecha.substring(0, 7);
-    if (!mesesMap[mesKey]) {
-      mesesMap[mesKey] = { mes: mesKey, gastoCombustible: 0, gastoMaint: 0, galones: 0, kmsByPlaca: {} };
-    }
-    mesesMap[mesKey].gastoMaint += Number(m.costoCOP) || 0;
+    const mes = m.fecha ? m.fecha.substring(0, 7) : 'Sin Fecha';
+    if (!datosMeses[mes]) datosMeses[mes] = { gastoCombustible: 0, gastoMaint: 0, galones: 0, kmsPorPlaca: {} };
+    datosMeses[mes].gastoMaint += Number(m.costoCOP) || 0;
   });
 
-  const historialMensual = Object.keys(mesesMap).sort().map(mKey => {
-    const item = mesesMap[mKey];
+  const reportesMensuales = Object.keys(datosMeses).sort().map(mes => {
+    const info = datosMeses[mes];
     let kmMes = 0;
-    Object.values(item.kmsByPlaca).forEach(kms => {
+    Object.values(info.kmsPorPlaca).forEach(kms => {
       if (kms.length > 1) kmMes += (Math.max(...kms) - Math.min(...kms));
     });
-
-    const rendMes = item.galones > 0 && kmMes > 0 ? (kmMes / item.galones).toFixed(1) : 0;
-
+    const rendMes = info.galones > 0 && kmMes > 0 ? (kmMes / info.galones).toFixed(1) : 0;
     return {
-      mes: item.mes,
-      gastoCombustible: item.gastoCombustible,
-      gastoMantenimiento: item.gastoMaint,
-      gastoTotalMes: item.gastoCombustible + item.gastoMaint,
-      kilometrosMes: kmMes,
-      rendimientoMes: Number(rendMes)
+      mes,
+      gastoCombustible: info.gastoCombustible,
+      gastoMaint: info.gastoMaint,
+      gastoTotal: info.gastoCombustible + info.gastoMaint,
+      kmRecorridos: kmMes,
+      rendimientoKmGal: Number(rendMes)
     };
   });
 
   res.json({
     gastoTotalCOP: gastoTotal,
-    gastoTanqueosCOP: gastoTanqueos,
-    gastoMantenimientoCOP: gastoMantenimiento,
     recorridoAcumuladoKm: recorridoTotal,
     rendimientoPromedio: rendimientoPromedio,
-    historialMensual: historialMensual,
+    reportesMensuales: reportesMensuales,
     vehiculos: flotaState.vehiculos,
     tanqueos: flotaState.tanqueos,
     mantenimientos: flotaState.mantenimientos
@@ -142,4 +130,4 @@ app.post('/api/v1/flota/vehiculos', (req, res) => {
   res.status(201).json(nuevo);
 });
 
-app.listen(PORT, () => console.log('Servidor Flota con Gráficas en puerto ' + PORT));
+app.listen(PORT, () => console.log('Servidor en puerto ' + PORT));
