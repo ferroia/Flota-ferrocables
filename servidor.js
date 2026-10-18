@@ -11,6 +11,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
+// Boceto inicial completamente en cero
 const datosIniciales = {
   vehiculos: [],
   tanqueos: []
@@ -44,7 +45,7 @@ app.get('/api/v1/flota/dashboard', (req, res) => {
   const gastoTotal = flotaState.tanqueos.reduce((acc, t) => acc + (Number(t.costoCOP) || 0), 0);
   const totalGalones = flotaState.tanqueos.reduce((acc, t) => acc + (Number(t.galones) || 0), 0);
   
-  // Calcular recorrido filtrado por la misma placa
+  // Cálculo de recorrido relativo por placa única
   let recorridoTotal = 0;
   const porPlaca = {};
   flotaState.tanqueos.forEach(t => {
